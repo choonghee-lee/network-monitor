@@ -1,1 +1,5 @@
+# vscode configuration
 .vscode
+
+# temporarily copied files
+*copy.*
