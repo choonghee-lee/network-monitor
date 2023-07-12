@@ -3,6 +3,7 @@
 
 #include <boost/asio.hpp>
 #include <boost/beast.hpp>
+#include <boost/beast/ssl.hpp>
 #include <boost/system/error_code.hpp>
 
 #include <functional>
@@ -26,12 +27,15 @@ namespace NetworkMonitor
          *  \param port     The port on the server.
          *  \param ioc      The io_context object. The user takes care of calling
          *                  ioc.run().
+         *  \param ctx      The TLS context to setup a TLS socket stream.
          */
         WebSocketClient(
             const std::string &url,
             const std::string &endpoint,
             const std::string &port,
-            boost::asio::io_context &ioc);
+            boost::asio::io_context &ioc,
+            boost::asio::ssl::context &ctx
+        );
 
         /*! \brief Destructor.
          */
@@ -80,7 +84,7 @@ namespace NetworkMonitor
         // We leave these uninitialized because they do not support a default
         // constructor.
         boost::asio::ip::tcp::resolver resolver_;
-        boost::beast::websocket::stream<boost::beast::tcp_stream> ws_;
+        boost::beast::websocket::stream<boost::beast::ssl_stream<boost::beast::tcp_stream>> ws_;
 
         boost::beast::flat_buffer rBuffer_{};
 
@@ -96,6 +100,8 @@ namespace NetworkMonitor
 
         void OnConnect(
             const boost::system::error_code &ec);
+
+        void OnTlsHandshake(const boost::system::error_code &ec);
 
         void OnHandshake(
             const boost::system::error_code &ec);

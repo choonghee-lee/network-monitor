@@ -7,9 +7,9 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 # Dependencies
 # If dependencies are managed with conan, we prepend the current build folder
-# to the CMake module path, where CMake looks for dependencies
+# to the CMake module path, where CMake looks for dependencies.
 if(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/conaninfo.txt)
-  list(PREPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_BINARY_DIR}")
+    list(PREPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_BINARY_DIR}")
 endif()
 find_package(Boost 1.74 REQUIRED COMPONENTS system unit_test_framework)
 find_package(OpenSSL REQUIRED)
@@ -20,8 +20,8 @@ enable_testing()
 # On Windows, we define a preprocessor symbol with the OS version to prevent
 # warnings from the Boost.Asio header files.
 if(WIN32)
-  include(GetWinVer REQUIRED)
-  get_win_ver(WINDOWS_VERSION)
+    include(GetWinVer REQUIRED)
+    get_win_ver(WINDOWS_VERSION)
 endif()
 
 # Static library
@@ -49,6 +49,7 @@ target_link_libraries(network-monitor
 
 # Tests
 set(TESTS_SOURCES
+    "${CMAKE_CURRENT_SOURCE_DIR}/tests/main.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/tests/websocket-client.cpp"
 )
 add_executable(network-monitor-tests ${TESTS_SOURCES})
@@ -65,12 +66,12 @@ target_link_libraries(network-monitor-tests
     PRIVATE
         network-monitor
         Boost::Boost
+        OpenSSL::OpenSSL
 )
 add_test(
     NAME network-monitor-tests
     COMMAND $<TARGET_FILE:network-monitor-tests>
 )
-
 # This tells CMake to check for a specific output to verify the test outcome.
 # When all unit tests pass, Boost.Test prints "No errors detected".
 set_tests_properties(network-monitor-tests PROPERTIES
